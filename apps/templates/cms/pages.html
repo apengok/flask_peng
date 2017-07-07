@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Adminstrap | Pages {% endblock %}
+{% block content %}
+    {{ super() }}
+    <section id="breadcrumb">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="active">Dashboard</li>
+            </ol>
+        </div>
+    </section>
+    
+    <section id="main">
+        <div class="container">
+            <div class="row">
+                {{ macros.leftboard() }}
+                {% include "content.html" %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- models -->
+    
+    <!-- addPage -->
+    {% include "modal.html" %}
+    
+    <!-- scripts -->
+    
+        
+    <script>
+        CKEDITOR.replace( 'editor1' );
+    </script>
+    
+    {% include "footer.html" %}
+
+{% endblock %}
+
