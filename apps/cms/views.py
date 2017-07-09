@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template,url_for,redirect,session
+from flask import render_template,url_for,redirect,session,request
 from . import cms
 
 @cms.route('/')

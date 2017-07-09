@@ -24,10 +24,10 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ url_for('.index') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('.pages') }}">Pages</a></li>
-            <li><a href="{{ url_for('.posts') }}">Posts</a></li>
-            <li><a href="{{ url_for('.users') }}">Users</a></li>
+            <li class="active"><a href="{{ url_for('cms.index') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('cms.pages') }}">Pages</a></li>
+            <li><a href="{{ url_for('cms.posts') }}">Posts</a></li>
+            <li><a href="{{ url_for('cms.users') }}">Users</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             
@@ -44,7 +44,8 @@
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{{ url_for('.index') }}">Log In</a></li>
+                <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
+                <li><a href="{{ url_for('auth.register') }}">Sign Up</a></li>
                 {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
