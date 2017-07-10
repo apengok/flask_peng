@@ -1,7 +1,14 @@
 from apps import db
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_login import UserMixin
 
-class Users(db.Model):
+from . import login_manager
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
+class Users(UserMixin,db.Model):
     __tablename__ = 'users'
     id = db.Column('id',db.Integer,primary_key=True)
     username = db.Column('username',db.String(64),unique=True)

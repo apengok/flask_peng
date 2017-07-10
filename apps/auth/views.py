@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import render_template,url_for,redirect,session,request,flash
+from flask_login import login_user,logout_user,login_required
 from . import auth
 from .forms import RegistrationForm,LoginForm
 from .. import db
@@ -19,11 +20,19 @@ def login():
         print 'form submit'
         user = Users.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
-            flash('You are logined')
-            return redirect(url_for('blog.index'))
+            login_user(user,form.remember_me.data)
+            return redirect(request.args.get('next') or url_for('blog.index'))
+        flash('Invalid username or password.')
         
     return render_template('auth/login.html',form=form)
 
+    
+@auth.route('/auth/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('cms.index'))
 
 @auth.route('/auth/register/',methods=['GET','POST'])
 def register():
