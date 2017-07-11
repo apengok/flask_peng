@@ -14,7 +14,7 @@ db_session = scoped_session(sessionmaker(autocommit=False,
         
 def init_db():
     from apps.models import Users
-    from apps.blog.models import BlogPost,Keyword
+    from apps.models.blogs import BlogPost,Keyword
     Model.metadata.create_all(bind=engine)
     
 Model = declarative_base(name='Model')

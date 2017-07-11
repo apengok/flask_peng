@@ -5,12 +5,26 @@ from config import config
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
+app = Flask(__name__)
+app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])
+
 bootstrap = Bootstrap()
+bootstrap.init_app(app)
+
 #db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection='strong'
 login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
 
+
+from apps.database import db_session
+from apps.models import Users
+from apps.views import cmss,blogs,auths
+
+app.register_blueprint(auths.mod)
+app.register_blueprint(blogs.mod)
+app.register_blueprint(cmss.mod)
 
 
 def create_app(config_name):
@@ -35,4 +49,3 @@ def create_app(config_name):
     
     return app
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
