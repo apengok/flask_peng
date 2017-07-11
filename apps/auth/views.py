@@ -3,7 +3,8 @@ from flask import render_template,url_for,redirect,session,request,flash
 from flask_login import login_user,logout_user,login_required
 from . import auth
 from .forms import RegistrationForm,LoginForm
-from .. import db
+#from .. import db
+from apps.database import db_session
 from .. models import Users
 
 
@@ -42,8 +43,8 @@ def register():
         user = Users(username=form.username.data, password=form.password.data,email=form.email.data,
         )
         
-        db.session.add(user)
-        db.session.commit()
+        db_session.add(user)
+        db_session.commit()
         flash('Thanks for registering')
         return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)

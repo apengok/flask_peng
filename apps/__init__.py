@@ -1,3 +1,4 @@
+import os
 from flask import Flask,render_template
 from flask_bootstrap import Bootstrap
 from config import config
@@ -5,10 +6,11 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 bootstrap = Bootstrap()
-db = SQLAlchemy()
+#db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection='strong'
 login_manager.login_view = 'auth.login'
+
 
 
 def create_app(config_name):
@@ -17,7 +19,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
     
     bootstrap.init_app(app)
-    db.init_app(app)
+    #db.init_app(app)
     
     login_manager.init_app(app)
     
@@ -32,3 +34,5 @@ def create_app(config_name):
     app.register_blueprint(blog_blueprint)
     
     return app
+
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
