@@ -11,14 +11,16 @@ app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])
 bootstrap = Bootstrap()
 bootstrap.init_app(app)
 
-#db = SQLAlchemy()
+db = SQLAlchemy()
+db.init_app(app)
+
 login_manager = LoginManager()
 login_manager.session_protection='strong'
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 
-from apps.database import db_session
+
 from apps.models import Users
 from apps.views import cmss,blogs,auths
 
@@ -33,7 +35,7 @@ def create_app(config_name):
     config[config_name].init_app(app)
     
     bootstrap.init_app(app)
-    #db.init_app(app)
+    db.init_app(app)
     
     login_manager.init_app(app)
     

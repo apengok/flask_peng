@@ -1,14 +1,15 @@
-from apps.database import Model
+from apps import db
 from sqlalchemy import Column,ForeignKey,String,Integer,Table,Text
 from sqlalchemy.orm import relationship
+from auths import Users
 
-post_keywords = Table('post_keywords',Model.metadata,
+post_keywords = Table('post_keywords',db.Model.metadata,
         Column('post_id',ForeignKey('posts.id'),primary_key=True),
         Column('keyword_id',ForeignKey('keywords.id'),primary_key=True)
     )
     
     
-class BlogPost(Model):
+class BlogPost(db.Model):
     __tablename__ = 'posts'
     
     id = Column(Integer,primary_key=True)
@@ -31,7 +32,7 @@ class BlogPost(Model):
         return "BlogPost(%r, %r, %r)" % (self.headline, self.body, self.author)
         
         
-class Keyword(Model):
+class Keyword(db.Model):
     __tablename__ = 'keywords'
     
     id = Column(Integer, primary_key=True)
@@ -42,3 +43,6 @@ class Keyword(Model):
                 
     def __init__(self,keyword):
         self.keyword = keyword
+        
+BlogPost.author = relationship(Users,back_populates="posts")
+Users.posts = relationship(BlogPost,back_populates="author",lazy="dynamic")

@@ -4,7 +4,7 @@ from flask_login import login_user,logout_user,login_required
 
 from apps.forms.auths import RegistrationForm,LoginForm
 #from .. import db
-from apps.database import db_session
+from apps import db
 from apps.models import Users
 
 mod = Blueprint('auth',__name__)
@@ -42,8 +42,8 @@ def register():
         user = Users(username=form.username.data, password=form.password.data,email=form.email.data,
         )
         
-        db_session.add(user)
-        db_session.commit()
+        db.session.add(user)
+        db.session.commit()
         flash('Thanks for registering')
         return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)

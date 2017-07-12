@@ -1,4 +1,4 @@
-from apps.database import Model
+from apps import db
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from sqlalchemy import Column,Integer,String
@@ -8,13 +8,14 @@ from apps import login_manager
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
-class Users(UserMixin,Model):
+class Users(UserMixin,db.Model):
     __tablename__ = 'users'
     id = Column('id',Integer,primary_key=True)
     username = Column('username',String(64),unique=True)
     password_hash = Column(String(128))
     gender = Column('gender',String(64))
     email = Column('email',String(64),unique=True,index=True)
+    cell_phone = Column('cell_phone',String(11))
     
         
     @property
