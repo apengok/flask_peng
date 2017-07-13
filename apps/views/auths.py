@@ -7,6 +7,9 @@ from apps.forms.auths import RegistrationForm,LoginForm
 from apps import db
 from apps.models import Users
 
+from apps.email import send_email
+
+
 mod = Blueprint('auth',__name__)
 
 @mod.route('/auth/')
@@ -44,6 +47,21 @@ def register():
         
         db.session.add(user)
         db.session.commit()
-        flash('Thanks for registering')
+        token = user.generate_confirmation_token()
+        send_email(user.email,'Confirm Your Account',
+                'auth/email/confirm',user=user,token=token)
+                
+        flash('A confirmation email has been sent to you by email')
         return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)
+    
+@mod.route('/confirm/<token>')
+@login_required
+def confirm(token):
+    if current_user.confirmed:
+        return redirect(url_for('.index'))
+    if current_user.confirm(token):
+        flash('You have confirmed your account.Thanks!')
+    else:
+        flash('The confirmation link is invalid or hax expired.')
+    return redirect(url_for('.index'))

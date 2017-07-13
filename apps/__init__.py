@@ -4,12 +4,16 @@ from flask_bootstrap import Bootstrap
 from config import config
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail improt Mail
 
 app = Flask(__name__)
 app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])
 
 bootstrap = Bootstrap()
 bootstrap.init_app(app)
+
+mail = Mail()
+mail.init_app(app)
 
 db = SQLAlchemy()
 db.init_app(app)
