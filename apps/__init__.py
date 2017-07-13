@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap
 from config import config
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail improt Mail
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])

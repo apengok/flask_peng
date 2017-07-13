@@ -1,31 +1,45 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 
+{% block title%}Peng|Jumbotron Template for Bootstrap{% endblock %}
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='css/jumbotron.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     {{ super() }}
-    <section id="breadcrumb">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="active">Dashboard</li>
-            </ol>
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, world!</h1>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>learing how to do this. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-    </section>
-    
-    <section id="main">
-        <div class="container">
-            <div class="row">
-                {{ macros.leftboard() }}
-                {% include "content.html" %}
-            </div>
+        <div class="col-md-4">
+          <h2>CMS</h2>
+          <p>learning how to buile cms site with bootstrap. </p>
+          <p><a class="btn btn-default" href="/cms/" role="button">View details &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Blog</h2>
+          <p>Peng's blog </p>
+          <p><a class="btn btn-default" href="/blog/" role="button">View details &raquo;</a></p>
         </div>
-    </section>
-    
-    <!-- models -->
-    
-    <!-- addPage -->
-    {% include "modal.html" %}
-    
-    <!-- scripts -->
+      </div>
+
+      <hr>
     
         
     <script>
@@ -35,4 +49,3 @@
     {% include "footer.html" %}
 
 {% endblock %}
-

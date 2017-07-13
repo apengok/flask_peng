@@ -1,33 +1,15 @@
 {% extends "base.html"%}
-{% from "_macros.html" import render_field %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Register {% endblock %}
 
 {% block content %}
-<!-- Modal -->
-    <div class="container"" id="Register" >
-       <div class="row">
-        <form action="/auth/register/" method="post">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Sign Up</h4>
-          </div>
-          
-            
-                {{ render_field(form.username) }}
-            
-                {{ render_field(form.email) }}
-            
-                {{ render_field(form.password) }}
-            
-                {{ render_field(form.confirm) }}
-            
-                {{ render_field(form.accept_tos) }}
-            
-                <p><input type="submit" value="Register"></p>
-            
-          </form>
-        </div>
+
+    <div class="page-header">
+        <h1>Register</h1>
+    </div>
+    <div class="col-md-4 center">
+        {{ wtf.quick_form(form) }}
     </div>
     
 {% endblock %}
