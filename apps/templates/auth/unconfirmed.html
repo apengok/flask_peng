@@ -1,0 +1,24 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}Peng | unconfirmed {% endblock %}
+
+
+
+{% block content %}
+
+
+    
+    <div class="container">
+        <h2>Hello,{{ current_user.username }}</h2>
+        <p>You have not confirmed you account yet.</p>
+        <p>Before you can access this site you need to confirm you account.Check your inbox,you should have received
+        an email with a confirmation link.
+        </p>
+        Need another confirmation email?<a href="{{ url_for('auth.resend_confirmation') }}">Click here</a>
+    
+
+    </div> <!-- /container -->
+{% endblock %}
+
