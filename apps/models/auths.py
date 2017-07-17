@@ -4,7 +4,8 @@ from flask_login import UserMixin
 from sqlalchemy import Column,Integer,String
 from apps import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
+from flask import current_app,request
+import hashlib
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -47,3 +48,12 @@ class Users(UserMixin,db.Model):
         db.session.add(self)
         db.session.commit()
         return True
+        
+    def gravatar(self,size=100,default='identicon',rating='g'):
+        if request.is_secure:
+            url = 'https://www.gravatar.com/avatar'
+        else:
+            url = 'http://www.gravatar.com/avatar'
+        hash = hashlib.md5('peng.weilin@yahoo.com'.encode('utf-8')).hexdigest()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+        url=url,hash=hash,size=size,default=default,rating=rating)

@@ -1,1 +1,15 @@
-User <b>{{ user.username }}</b> has joined.
+<p>Dear {{ user.username }},</p>
+
+<p>Welcome to <b>Peng's</b>!</p>
+
+<p>To confirm your account please <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">click here</a>.</p>
+
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>
+
+<p>Sincerely,</p>
+
+<p>The Peng Team</p>
+
+<p><small>Note: replies to this email address are not monitored.</small></p>
