@@ -45,8 +45,19 @@ class ChangePasswordForm(FlaskForm):
         ])
     confirm = PasswordField('Repeat Password',validators=[Required()])
     submit = SubmitField('Confirm Change')
+
+class PasswordResetRequestForm(FlaskForm):
+
+    email = StringField('Email', validators=[Required(), Length(1, 64),
+
+                                             Email()])
+
+    submit = SubmitField('Reset Password')
     
 class ResetPasswordForm(FlaskForm):
+    email = StringField('Email', validators=[Required(), Length(1, 64),
+
+                                             Email()])
     password = PasswordField('New Password', validators=[
         Required(),
         EqualTo('confirm', message='Passwords must match')
@@ -54,11 +65,15 @@ class ResetPasswordForm(FlaskForm):
     confirm = PasswordField('Repeat Password',validators=[Required()])
     submit = SubmitField('Confirm Change')
     
+    def validate_email(self,field):
+        if Users.query.filter_by(email=field.data).first() is None:
+            raise ValidationError('Unknown email address.')
+    
 class ChangeEmailForm(FlaskForm):
-    old_password = PasswordField('Old Password',validators=[Required()])
-    password = PasswordField('New Password', validators=[
-        Required(),
-        EqualTo('confirm', message='Passwords must match')
-        ])
-    confirm = PasswordField('Repeat Password',validators=[Required()])
+    email = StringField('New Email Address', validators=[Required(),Length(1,64),Email()])
+    password = PasswordField('Password', validators=[Required()])
     submit = SubmitField('Confirm Change')
+    
+    def validate_email(self,field):
+        if Users.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registed.')

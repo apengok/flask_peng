@@ -2,7 +2,8 @@ from datetime import datetime
 from flask import Blueprint,render_template,url_for,redirect,session,request,flash
 from flask_login import login_user,logout_user,login_required,current_user
 
-from apps.forms.auths import RegistrationForm,LoginForm,ChangePasswordForm
+from apps.forms.auths import RegistrationForm,LoginForm,ChangePasswordForm,\
+PasswordResetRequestForm,ResetPasswordForm,ChangeEmailForm
 #from .. import db
 from apps import db
 from apps.models import Users
@@ -108,18 +109,49 @@ def change_password():
             flash('Invalid password.')
     return render_template('auth/change_password.html',form=form)
     
+@mod.route('/auth/reset_password/',methods=['GET','POST'])
+def reset_password_request():
+    
+    form = PasswordResetRequestForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
+        if user:
+            token = user.generate_reset_token()
+            send_email(user.email,'Reset you Password',
+            '/auth/email/reset_password',user=user,token=token,
+            next=request.args.get('next'))
+            flash('An email with instructions to rest your password has been sent to you.')
+            return redirect(url_for('auth.login'))
+        else:
+            print 'user is None?'
+            flash('This email not registered.')
+    return render_template('auth/reset_password.html',form=form)
+    
+@mod.route('/auth/reset_password/<token>',methods=['GET','POST'])
+def reset_password(token):
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
+        if user is None:
+            return redirect(url_for('auth.index'))
+        if user.reset_password(token,form.password.data):
+            flash('You password has been reset.')
+            return redirect(url_for('auth.login'))
+        else:
+            return redirect(url_for('auth.index'))
+        
+    return render_template('auth/reset_password.html',form=form)
+
     
 @mod.route('/auth/change_email/',methods=['GET','POST'])
 @login_required
 def change_email():
-    form = ChangePasswordForm()
+    form = ChangeEmailForm()
     if form.validate_on_submit():
-        if current_user.verify_password(form.old_password.data):
-            current_user.password = form.password.data
-            db.session.add(current_user)
-            db.session.commit()
-            flash('You password has been updated.')
-            return redirect(url_for('auth.index'))
-        else:
-            flash('Invalid password.')
-    return render_template('auth/change_password/',form=form)
+        current_user.email = form.password.email
+        db.session.add(current_user)
+        db.session.commit()
+        flash('You email has been updated.')
+        return redirect(url_for('auth.index'))
+    
+    return render_template('auth/change_email/',form=form)
