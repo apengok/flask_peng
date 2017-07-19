@@ -6,6 +6,7 @@ from apps import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app,request
 import hashlib
+from datetime import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -57,6 +58,12 @@ class Users(UserMixin,db.Model):
     confirmed = Column('confirmed',db.Boolean,default=False)
     role_id = Column(db.Integer,db.ForeignKey('roles.id'))
     
+    #profile
+    location = db.Column(db.String(64))
+    about_me = db.Column(db.Text())
+    member_since = db.Column(db.DateTime(),default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(),default=datetime.utcnow)
+    
     def __init__(self,**kwargs):
         super(Users,self).__init__(**kwargs)
         if self.role is None:
@@ -64,7 +71,13 @@ class Users(UserMixin,db.Model):
                 self.role = Role.query.filter_by(permissions=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
-        
+    
+    def can(self,permissions):
+        return self.role is not None and \
+            (self.role.permissions & permissions) == permissions
+            
+    def is_administrator(self):
+        return self.can(Permission.ADMINISTER)
         
     @property
     def password(self):
@@ -119,3 +132,15 @@ class Users(UserMixin,db.Model):
         hash = hashlib.md5('peng.weilin@yahoo.com'.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
         url=url,hash=hash,size=size,default=default,rating=rating)
+        
+    def ping(self):
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
+        
+class AnonymousUser(AnonymousUserMixin):
+    def can(self,permissions):
+        return False
+        
+    def is_administrator(self):
+        return False

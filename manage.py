@@ -20,7 +20,7 @@ migrate = Migrate(app,db)
 #migrate.init_app(app, db, render_as_batch=is_sqlite)
 
 def make_shell_context():
-    return dict(app=app,db=db,Users=Users)
+    return dict(app=app,db=db,Users=Users,Role=Role)
 manager.add_command("shell",Shell(make_context=make_shell_context))
 manager.add_command('db',MigrateCommand)
 
