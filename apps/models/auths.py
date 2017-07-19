@@ -1,6 +1,6 @@
 from apps import db
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin,AnonymousUserMixin
 from sqlalchemy import Column,Integer,String
 from apps import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -11,6 +11,42 @@ import hashlib
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
+class Permission:
+    FOLLOW = 0x01
+    COMMENT = 0x02
+    WRITE_ARTICLES = 0x04
+    MODERATE_COMMENTS = 0x08
+    ADMINISTER = 0x80
+    
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = Column('id',db.Integer,primary_key=True)
+    name = Column('name',db.String(64),unique=True)
+    default = Column(db.Boolean,default=False,index=True)
+    permissions = Column(db.Integer)
+    users = db.relationship('Users',backref='role',lazy='dynamic')
+    
+    @staticmethod
+    def insert_roles():
+        roles = {
+            'User':(Permission.FOLLOW |
+                    Permission.COMMENT |
+                    Permission.WRITE_ARTICLES,True),
+            'Moderator':(Permission.FOLLOW |
+                        Permission.COMMENT |
+                        Permission.WRITE_ARTICLES |
+                        Permission.MODERATE_COMMENTS,False),
+            'Administrator':(0xff,False)
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()
+        
 class Users(UserMixin,db.Model):
     __tablename__ = 'users'
     id = Column('id',Integer,primary_key=True)
@@ -19,7 +55,16 @@ class Users(UserMixin,db.Model):
     gender = Column('gender',String(64))
     email = Column('email',String(64),unique=True,index=True)
     confirmed = Column('confirmed',db.Boolean,default=False)
+    role_id = Column(db.Integer,db.ForeignKey('roles.id'))
     
+    def __init__(self,**kwargs):
+        super(Users,self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config['PENG_ADMIN']:
+                self.role = Role.query.filter_by(permissions=0xff).first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+        
         
     @property
     def password(self):

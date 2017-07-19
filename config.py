@@ -7,6 +7,7 @@ class Config:
     MAIL_SUBJECT_PREFIX = '[Flasky]'
     MAIL_SENDER = 'Flasky Admin <peng.weilin@yahoo.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    PENG_ADMIN = os.environ.get('PENG_ADMIN') or 'peng.weilin@yahoo.com'
     
     MAIL_SERVER = 'smtp.mail.yahoo.com'
     MAIL_PORT = 587
