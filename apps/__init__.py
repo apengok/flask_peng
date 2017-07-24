@@ -5,6 +5,7 @@ from config import config
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
+from flask_moment import Moment
 
 app = Flask(__name__)
 app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])
@@ -22,6 +23,9 @@ login_manager = LoginManager()
 login_manager.session_protection='strong'
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
+
+moment = Moment()
+moment.init_app(app)
 
 
 

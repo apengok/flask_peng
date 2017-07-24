@@ -38,6 +38,7 @@
                         Account <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('auth.user',username=current_user.username) }}">Profile</a></li>
                         <li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
                         <li><a href="{{ url_for('auth.change_email') }}">Change Email</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
@@ -97,7 +98,7 @@
 <!-- scripts -->
 {% block scripts %}
     {{ super() }}
-    
+    {{ moment.include_moment() }}
     <script src="http://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 {% endblock %}

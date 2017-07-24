@@ -1,12 +1,26 @@
 {% extends "base.html"%}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Register {% endblock %}
+{% block title %}User Profile {% endblock %}
 
 {% block content %}
 
     <div class="page-header">
+        <div class="col-md-3">
+            <div class="well dash-box">
+                <a href="#" >
+                        <img src="{{ current_user.gravatar(size=100) }}">  
+                        
+                    </a>
+            </div>
+        </div>
         <h1>{{ user.username }}</h1>
+        {% if user == current_user%}
+            <a class="btn btn-default" href="{{ url_for('auth.edit_profile')}}">Edit Profile</a>
+        {% endif %}
+        {% if current_user.is_administrator() %}
+            <a class="btn btn-default" href="{{ url_for('auth.edit_profile_admin',id=user.id) }}">Edit Profile[Admin]</a>
+        {% endif %}
         {% if user.name or user.location %}
         <p>
         {% if user.name %}{{ user.name }}{% endif %}
@@ -21,10 +35,12 @@
         <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
         {% endif %}
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-        <p>{# 
+        <p>
         Member since {{ moment(user.member_since).format('L') }}.
-        Last seen {{ moment(user.last_seen).fromNow() }}.#}
+        Last seen {{ moment(user.last_seen).fromNow(refresh=True) }}.
+        
         </p>
+        Time Now :{{ moment(datetime).format('L') }}
     </div>
     
     

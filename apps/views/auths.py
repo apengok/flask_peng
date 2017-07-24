@@ -1,12 +1,12 @@
 from datetime import datetime
 from flask import Blueprint,render_template,url_for,redirect,session,request,flash
 from flask_login import login_user,logout_user,login_required,current_user
-
+from apps.decorators import admin_required
 from apps.forms.auths import RegistrationForm,LoginForm,ChangePasswordForm,\
-PasswordResetRequestForm,ResetPasswordForm,ChangeEmailForm
+PasswordResetRequestForm,ResetPasswordForm,ChangeEmailForm,EditProfileForm,EditProfileAdminForm
 #from .. import db
 from apps import db
-from apps.models import Users
+from apps.models import Users,Role
 
 from apps.email import send_email
 
@@ -28,8 +28,47 @@ def user(username):
     user = Users.query.filter_by(username=username).first()
     if user is None:
         abort(404)
-    return render_template('user.html',user=user)
-        
+    return render_template('user.html',user=user,datetime=datetime.utcnow() )
+
+@mod.route('/auth/edit_profile',methods=['GET','POST'])    
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.location = form.location.data
+        current_user.about_me = form.about_me.data
+        db.session.add(current_user)
+        db.session.commit()
+        flash('Your profile has been updated.')
+        return redirect(url_for('auth.user',username=current_user.username))
+    form.username.data = current_user.username
+    form.location.data = current_user.location
+    form.about_me = current_user.about_me
+    return render_template('auth/edit_profile.html',form=form)
+    
+@mod.route('/auth/edit_profile/<int:id>',methods=['GET','POST'])    
+@login_required
+@admin_required
+def edit_profile_admin(id):
+    user = Users.query.get_or_404(id)
+    form = EditProfileAdminForm(user=user)
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.confirmed = form.confirmed.data
+        user.role = Role.query.get(form.role.data)
+        user.location = form.location.data
+        user.about_me = form.about_me.data
+        db.session.add(user)
+        db.session.commit()
+        flash('Your profile has been updated.')
+        return redirect(url_for('auth.user',username=current_user.username))
+    form.username.data = user.username
+    form.confirmed.data = user.confirmed
+    form.role.data = user.role_id
+    form.location.data = user.location
+    form.about_me = current_user.about_me
+    return render_template('auth/edit_profile.html',form=form,user=user)
 
 @mod.route('/auth/unconfirmed/')
 def unconfirmed():
