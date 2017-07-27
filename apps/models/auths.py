@@ -64,6 +64,8 @@ class Users(UserMixin,db.Model):
     member_since = db.Column(db.DateTime(),default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(),default=datetime.utcnow)
     
+    posts = db.relationship('BlogPost',backref='author',lazy='dynamic')
+    
     def __init__(self,**kwargs):
         super(Users,self).__init__(**kwargs)
         if self.role is None:

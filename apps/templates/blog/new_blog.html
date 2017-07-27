@@ -1,5 +1,7 @@
 {% extends "bootstrap/base.html" %}
 
+{% import "bootstrap/wtf.html" as wtf %}
+
 {% block title %} Peng's Blog{% endblock %}
 
 <!-- head -->
@@ -30,39 +32,17 @@
         <div class="col-sm-8 blog-main">
 
           <div class="blog-post">
-            <form>
-              
-              <div class="modal-body">
-                <div class="form-group">
-                    <label>Page Title</label>
-                    <input type="text" class="form-control" placeholder="Page Title">
-                </div>
-                <div class="form-group">
-                    <label>Page Body</label>
-                    <textarea name="editor1" class="form-control" placeholder="pleas input Page contents"></textarea>
-                </div>
-                <div class="checkbox">
-                    <label>
-                    <input type="checkbox" >Published
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Meta Tags</label>
-                    <input type="text" class="form-control" placeholder="add some tags ...">
-                </div>
-                <div class="form-group">
-                    <label>Meta Description</label>
-                    <input type="text" class="form-control" placeholder="Add Meta Descriotion ...">
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-              </div>
+            <form action='/blog/new_blog/' method="post">
+            
+            {#
+            {{ form.csrf_token }}
+            #}
+            {{ wtf.quick_form(form) }}
+
               </form>
             </div>
           </div>
-        
+            
 
           
 
@@ -104,7 +84,7 @@
 
     </div><!-- /.container -->
     <script>
-        CKEDITOR.replace( 'editor1' );
+        CKEDITOR.replace( 'body' );
     </script>
 
    {% include "footer.html" %}

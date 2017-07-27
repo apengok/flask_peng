@@ -1,6 +1,7 @@
 from apps import db
 from sqlalchemy import Column,ForeignKey,String,Integer,Table,Text
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from auths import Users
 
 post_keywords = Table('post_keywords',db.Model.metadata,
@@ -16,6 +17,7 @@ class BlogPost(db.Model):
     user_id = Column(Integer, ForeignKey('users.id'))
     headline = Column(String(255), nullable=False)
     body = Column(Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     
     # many to many BlogPost<->Keyword
     keywords = relationship('Keyword',
