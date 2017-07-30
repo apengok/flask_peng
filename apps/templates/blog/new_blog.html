@@ -34,9 +34,9 @@
           <div class="blog-post">
             <form action='/blog/new_blog/' method="post">
             
-            {#
+            
             {{ form.csrf_token }}
-            #}
+            
             {{ wtf.quick_form(form) }}
 
               </form>
