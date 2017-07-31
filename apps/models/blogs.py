@@ -23,6 +23,9 @@ class BlogPost(db.Model):
     keywords = relationship('Keyword',
                            secondary=post_keywords,
                            back_populates='posts')
+    
+    
+    comments = relationship('Comments',backref='posts',lazy='dynamic')                                
                            
     
     def __init__(self,headline,body,author):
@@ -48,3 +51,15 @@ class Keyword(db.Model):
         
 BlogPost.author = relationship(Users,back_populates="posts")
 Users.posts = relationship(BlogPost,back_populates="author",lazy="dynamic")
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+    
+    id = Column(Integer,primary_key=True)
+    guest = Column(String(50))
+    body = Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    post_id = Column(Integer,db.ForeignKey('posts.id'))
+    
+    def __repr__(self):
+        return "Comment(%r,%r)" %(self.guest,self.body)

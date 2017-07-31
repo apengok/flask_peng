@@ -36,7 +36,7 @@
         
         {% for blog in blogs %}
         <div class="blog-header">
-        <h1 class="blog-title">{{ blog.headline }}</h1>
+        <h1 class="blog-title"><a href="{{ url_for('.post',id=blog.id)}}">{{ blog.headline }}</a></h1>
         <p class="blog-post-meta">{{ blog.timestamp }} by <a href="#">{{ current_user.username }}</a></p>
         </div>
         <div class="blog-post">
@@ -46,13 +46,15 @@
         </div>
         
         {% endfor %}
-{#   
+ 
+        {% if pagination %}
         <div class="pagination">
             {{ macros.pagination_widget(pagination,'.index')}}
         </div>
-#}     
+        {% endif %}
+     
           <!-- /.blog-post -->
-
+{#  
           <nav>
             <ul class="pager">
               <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
@@ -62,7 +64,7 @@
               
             </ul>
           </nav>
-
+#}
         </div><!-- /.blog-main -->
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">

@@ -1,0 +1,136 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} Peng's Blog{% endblock %}
+
+{% import "_macros.html" as macros %}
+
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='css/blog.css') }}" rel="stylesheet">
+    <script src="http://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="#">Home</a>
+          <a class="blog-nav-item" href="#">New features</a>
+          <a class="blog-nav-item" href="#">Press</a>
+          <a class="blog-nav-item" href="{{ url_for('blog.new_blog')}}">New Blog</a>
+          <a class="blog-nav-item" href="#">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+        
+        {% for blog in blogs %}
+        <div class="blog-header">
+        <h1 class="blog-title">{{ blog.headline }}</h1>
+        <p class="blog-post-meta">{{ blog.timestamp }} by <a href="#">{{ current_user.username }}</a></p>
+        </div>
+        <div class="blog-post">
+            <div>
+                {{ blog.body | safe }}
+            </div>
+        </div>
+        
+        {% endfor %}
+
+          <!-- /.blog-post -->
+
+          <nav>
+            <ul class="pager">
+              <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
+              <a href="{% if pagination.has_prev%}{{ url_for('.index',page=pagination.page-1)}}{% else %}#{% endif %}">Previous</a></li>
+              <li{% if not pagination.has_next %} class="disabled"{% endif %}>
+              <a href="{% if pagination.has_next%}{{ url_for('.index',page=pagination.page+1)}}{% else %}#{% endif %}">Next</a></li>
+              
+            </ul>
+          </nav>
+          
+          <!-- comment -->
+          {% for comment in comments %}
+            <div class="blog-header">
+            <p class="blog-post-meta">{{ comment.timestamp }} by <a href="#">{{ comment.guest }}</a></p>
+            </div>
+            <div class="blog-post">
+                <div>
+                    {{ comment.body | safe }}
+                </div>
+            </div>
+            
+            {% endfor %}
+            
+
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination,'.post')}}
+        </div>
+        
+        <div>
+            {{ wtf.quick_form(form) }}
+        </div>
+  
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Archives</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">March 2014</a></li>
+              <li><a href="#">February 2014</a></li>
+              <li><a href="#">January 2014</a></li>
+              <li><a href="#">December 2013</a></li>
+              <li><a href="#">November 2013</a></li>
+              <li><a href="#">October 2013</a></li>
+              <li><a href="#">September 2013</a></li>
+              <li><a href="#">August 2013</a></li>
+              <li><a href="#">July 2013</a></li>
+              <li><a href="#">June 2013</a></li>
+              <li><a href="#">May 2013</a></li>
+              <li><a href="#">April 2013</a></li>
+            </ol>
+          </div>
+          <div class="sidebar-module">
+            <h4>Elsewhere</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">Facebook</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+   {% include "footer.html" %}
+
+
+
+{% endblock %}
+
+    <!-- scripts -->
+{% block scripts %}
+    {{ super() }}
+    
+    <script src="http://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+{% endblock %}

@@ -10,3 +10,9 @@ class PostBlogForm(FlaskForm):
     tags = StringField('Meta Tags',validators=[Length(0,300)])
     description = StringField('Meta Description',validators=[Length(0,640)])
     submit = SubmitField('Submit')
+    
+    
+class CommentForm(FlaskForm):
+    guest = StringField('Guest name',validators=[Length(0,256)])
+    body = TextAreaField('Comment')
+    submit = SubmitField('Submit')
