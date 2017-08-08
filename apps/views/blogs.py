@@ -2,7 +2,7 @@ from flask import Blueprint,render_template,redirect,url_for,request
 from flask_login import login_required,current_user
 from apps import db
 from apps.forms.blogs import PostBlogForm,CommentForm
-from apps.models import Users,Role,BlogPost,Keyword,Comments
+from apps.models import Users,Role,BlogPost,Category,Tag,Comments
 
 mod = Blueprint('blog',__name__)
 
@@ -14,7 +14,8 @@ def index():
         # )
     #blogs =pagination.items
     blogs = BlogPost.query.order_by(BlogPost.timestamp.desc()).all()
-    return render_template('blog/index.html',blogs=blogs,pagination=[])
+    category = Category.query.all()
+    return render_template('blog/index.html',blogs=blogs,pagination=[],category=category)
     
 @mod.route('/blog/new_blog/',methods=['GET','POST'])
 @login_required
@@ -24,12 +25,24 @@ def new_blog():
         title = form.title.data
         body = form.body.data
         publish = form.publish.data
-        tags = form.tags.data
-        description = form.description.data
+        category = form.category.data
+        keywords = form.keyword.data.split(' ')
         
-        post = BlogPost(headline=title,body=body,author=current_user._get_current_object())
-        post.keywords.append(Keyword(tags))
+        cat = Category.query.filter_by(name=category).first()
+        if cat is None:
+            cat = Category(name=category)
+        
+        post = BlogPost(headline=title,body=body,author=current_user._get_current_object(),category=cat)#,tags=tag)
+        cat.posts.append(post)
+        
+        for kw in keywords:
+            tag = Tag(keyword=kw)
+            post.tags.append(tag)
+        #tag.posts.append(post)
+        
         db.session.add(post)
+        #db.session.add(cat)
+        #db.session.add(tag)
         db.session.commit()
         
         return redirect(url_for('blog.index'))
@@ -39,11 +52,12 @@ def new_blog():
 @mod.route('/blog/<int:id>',methods=['GET','POST'])
 def post(id):
     post = BlogPost.query.get_or_404(id)
+    post_total = BlogPost.query.count()
     form = CommentForm()
     if form.validate_on_submit():
         guest = form.guest.data
         body = form.body.data
-        comment = Comments(guest=guest,post=post,body=body)
+        comment = Comments(guest=guest,posts=post,body=body)
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('.post',id=post.id,page=-1))
@@ -53,6 +67,7 @@ def post(id):
     pagination = post.comments.order_by(Comments.timestamp.asc()).paginate(
     page, per_page=20,    error_out=False)
     comments = pagination.items
-    return render_template('blog/post.html', posts=[post], form=form,
-        comments=comments, pagination=pagination)
+    category = Category.query.all()
+    return render_template('blog/post.html', blog=post, form=form,
+        comments=comments, pagination=pagination,category=category,post_total=post_total)
         

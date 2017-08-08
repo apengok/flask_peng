@@ -4,53 +4,71 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from auths import Users
 
-post_keywords = Table('post_keywords',db.Model.metadata,
-        Column('post_id',ForeignKey('posts.id'),primary_key=True),
-        Column('keyword_id',ForeignKey('keywords.id'),primary_key=True)
-    )
-    
+
+
+reltags = db.Table('reltags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('page_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+)
+
     
 class BlogPost(db.Model):
     __tablename__ = 'posts'
     
     id = Column(Integer,primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
     headline = Column(String(255), nullable=False)
     body = Column(Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     
+    user_id = Column(Integer, ForeignKey('users.id'))
+    
+    
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship('Category',
+        backref=db.backref('posts', lazy='dynamic'))
+
+    
     # many to many BlogPost<->Keyword
-    keywords = relationship('Keyword',
-                           secondary=post_keywords,
-                           back_populates='posts')
+    tags = db.relationship('Tag', secondary=reltags, lazy='subquery',
+        backref=db.backref('pages', lazy='dynamic'))
     
     
     comments = relationship('Comments',backref='posts',lazy='dynamic')                                
                            
     
-    def __init__(self,headline,body,author):
-        self.author = author
-        self.headline = headline
-        self.body = body
+    # def __init__(self,headline,body,author):
+        # self.author = author
+        # self.headline = headline
+        # self.body = body
         
     def __repr__(self):
         return "BlogPost(%r, %r, %r)" % (self.headline, self.body, self.author)
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+
+    # def __init__(self, name):
+        # self.name = name
         
-        
-class Keyword(db.Model):
-    __tablename__ = 'keywords'
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
+
+
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)        
+    keyword = db.Column(db.String(50))
     
-    id = Column(Integer, primary_key=True)
-    keyword = Column(String(50), nullable=False, unique=True)
-    posts = relationship('BlogPost',
-                secondary=post_keywords,
-                back_populates='keywords')
-                
-    def __init__(self,keyword):
-        self.keyword = keyword
+    # def __init__(self,name):
+        # self.name = name
         
-BlogPost.author = relationship(Users,back_populates="posts")
-Users.posts = relationship(BlogPost,back_populates="author",lazy="dynamic")
+    def __repr__(self):
+        return '<Category %r>' % self.keyword
+
 
 class Comments(db.Model):
     __tablename__ = 'comments'

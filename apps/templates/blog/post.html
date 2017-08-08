@@ -35,7 +35,7 @@
 
         <div class="col-sm-8 blog-main">
         
-        {% for blog in blogs %}
+        
         <div class="blog-header">
         <h1 class="blog-title">{{ blog.headline }}</h1>
         <p class="blog-post-meta">{{ blog.timestamp }} by <a href="#">{{ current_user.username }}</a></p>
@@ -46,16 +46,16 @@
             </div>
         </div>
         
-        {% endfor %}
+        
 
           <!-- /.blog-post -->
 
           <nav>
             <ul class="pager">
-              <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
-              <a href="{% if pagination.has_prev%}{{ url_for('.index',page=pagination.page-1)}}{% else %}#{% endif %}">Previous</a></li>
-              <li{% if not pagination.has_next %} class="disabled"{% endif %}>
-              <a href="{% if pagination.has_next%}{{ url_for('.index',page=pagination.page+1)}}{% else %}#{% endif %}">Next</a></li>
+              <li{% if blog.id == 1 %} class="disabled"{% endif %}>
+              <a href="{{ url_for('blog.post',id=blog.id-1)}}">Previous</a></li>
+              <li{% if blog.id == post_total %} class="disabled"{% endif %}>
+              <a href="{{ url_for('blog.post',id=blog.id+1)}}">Next</a></li>
               
             </ul>
           </nav>
@@ -73,11 +73,11 @@
             
             {% endfor %}
             
-
+{#
         <div class="pagination">
             {{ macros.pagination_widget(pagination,'.post')}}
         </div>
-        
+#}        
         <div>
             {{ wtf.quick_form(form) }}
         </div>
@@ -91,21 +91,13 @@
             <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
           </div>
           <div class="sidebar-module">
-            <h4>Archives</h4>
+            <h4>Category</h4>
+            {% for cat in category %}
             <ol class="list-unstyled">
-              <li><a href="#">March 2014</a></li>
-              <li><a href="#">February 2014</a></li>
-              <li><a href="#">January 2014</a></li>
-              <li><a href="#">December 2013</a></li>
-              <li><a href="#">November 2013</a></li>
-              <li><a href="#">October 2013</a></li>
-              <li><a href="#">September 2013</a></li>
-              <li><a href="#">August 2013</a></li>
-              <li><a href="#">July 2013</a></li>
-              <li><a href="#">June 2013</a></li>
-              <li><a href="#">May 2013</a></li>
-              <li><a href="#">April 2013</a></li>
+              <li><a href="#">{{ cat.name }}</a><span class="badge">{{ cat.posts.count() }}</span></li>
+              
             </ol>
+            {% endfor %}
           </div>
           <div class="sidebar-module">
             <h4>Elsewhere</h4>
