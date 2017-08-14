@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_moment import Moment
+from flask_admin import Admin
 
 app = Flask(__name__)
 app.config.from_object(config[os.getenv('FLASK_CONFIG') or 'default'])
@@ -27,15 +28,19 @@ login_manager.init_app(app)
 moment = Moment()
 moment.init_app(app)
 
+admin = Admin()
+admin.init_app(app)
 
 
-from apps.models import Users
+from apps.models import Users,BlogPost
 from apps.views import cmss,blogs,auths
 
 app.register_blueprint(auths.mod)
 app.register_blueprint(blogs.mod)
 app.register_blueprint(cmss.mod)
 
+from flask_admin.contrib.sqla import ModelView
+admin.add_view(ModelView(BlogPost, db.session))
 
 def create_app(config_name):
     app = Flask(__name__)

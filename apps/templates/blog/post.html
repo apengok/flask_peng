@@ -60,25 +60,30 @@
             </ul>
           </nav>
           
+          <ul class="media-list">
           <!-- comment -->
           {% for comment in comments %}
-            <div class="blog-header">
-            <p class="blog-post-meta">{{ comment.timestamp }} by <a href="#">{{ comment.guest }}</a></p>
+          <li class="media">
+          <div class="media-left">
+              <a href="#">
+                <img class="media-object" src="http://www.gravatar.com/avatar/3b2b619ec6262955cb95161e729e20db?s=18&amp;d=identicon&amp;r=g" alt="...">
+              </a>
             </div>
-            <div class="blog-post">
-                <div>
-                    {{ comment.body | safe }}
-                </div>
+
+            <div class="media-body">
+            <p >{{ moment(comment.timestamp).fromNow()  }} by <a href="#">{{ comment.guest }}</a></p>
+                {{ comment.body | safe }}
+                
             </div>
-            
+            </li>
             {% endfor %}
-            
-{#
+           </ul>
+{#  
         <div class="pagination">
             {{ macros.pagination_widget(pagination,'.post')}}
         </div>
 #}        
-        <div>
+        <div class="comment-form">
             {{ wtf.quick_form(form) }}
         </div>
   

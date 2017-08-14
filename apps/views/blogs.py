@@ -71,3 +71,17 @@ def post(id):
     return render_template('blog/post.html', blog=post, form=form,
         comments=comments, pagination=pagination,category=category,post_total=post_total)
         
+        
+@mod.route('/blog/category/<string:catname>')
+def category(catname):        
+    page = request.args.get('page',1,type=int)
+    # pagination = current_user.posts.order_by(BlogPost.timestamp.desc()).paginate(
+            # page,per_page=20,error_out=False
+        # )
+    #blogs =pagination.items
+    cate = Category.query.filter_by(name=catname).first()
+    blogs = BlogPost.query.filter_by(category=cate).order_by(BlogPost.timestamp.desc()).all()
+    category = Category.query.all()
+    
+    #blogs = [cat.posts for cat in cate]
+    return render_template('blog/index.html',blogs=blogs,pagination=[],category=category)

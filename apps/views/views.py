@@ -1,6 +1,6 @@
 from flask import Blueprint,render_template,url_for,redirect,session,request,flash
 from apps import app
-
+from flask_login import login_required
 
 
 
@@ -8,6 +8,11 @@ from apps import app
 @app.route('/')
 def index():
     return render_template('index.html')
+    
+@app.route('/admin/')
+@login_required
+def admin():
+    return render_template('admin/index.html')
     
 @app.errorhandler(404)
 def page_not_found(e):

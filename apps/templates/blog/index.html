@@ -37,7 +37,7 @@
         {% for blog in blogs %}
         <div class="blog-header">
         <h1 class="blog-title"><a href="{{ url_for('blog.post',id=blog.id)}}">{{ blog.headline }}</a></h1>
-        <p class="blog-post-meta">{{ blog.timestamp }} by <a href="#">{{ current_user.username }}</a></p>
+        <p class="blog-post-meta">{{ blog.timestamp }} by <a href="#">{{ blog.author.username }}</a></p>
         </div>
         <div class="blog-post">
             <div>
@@ -76,7 +76,7 @@
             <h4>Category</h4>
             {% for cat in category %}
             <ol class="list-unstyled">
-              <li><a href="#">{{ cat.name }}</a><span class="badge">{{ cat.posts.count() }}</span></li>
+              <li><a href="{{ url_for('blog.category',catname=cat.name)}}">{{ cat.name }}</a><span class="badge">{{ cat.posts.count() }}</span></li>
               
             </ol>
             {% endfor %}
