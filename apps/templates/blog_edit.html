@@ -1,0 +1,30 @@
+{% extends 'admin/model/edit.html' %} 
+{% import 'admin/rule_dm.html' as rule_demo %}
+
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet">
+    <script src="http://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>
+{% endblock %}
+
+
+{% block brand %}
+    <h2 id="brand">Edit {{ admin_view.name|capitalize }}</h2>
+    <div class="clearfix"></div>
+    <hr>
+{% endblock %}
+
+{% block body %}
+  {% call lib.form_tag(form) %}
+      {{ lib.render_form_fields(form, form_opts=form_opts) }}
+      <div class="form-buttons">
+        {{ lib.render_form_buttons(return_url) }}
+      </div>
+  {% endcall %}
+  
+<script>
+    CKEDITOR.replace( 'editor1' );
+</script>
+    
+{% endblock %}
+

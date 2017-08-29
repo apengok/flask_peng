@@ -28,19 +28,22 @@ login_manager.init_app(app)
 moment = Moment()
 moment.init_app(app)
 
-admin = Admin()
+admin = Admin(base_template='layout.html',template_mode='bootstrap3')
 admin.init_app(app)
 
 
-from apps.models import Users,BlogPost
+from apps.models import Users,BlogPost,Category
 from apps.views import cmss,blogs,auths
 
 app.register_blueprint(auths.mod)
 app.register_blueprint(blogs.mod)
 app.register_blueprint(cmss.mod)
 
+
 from flask_admin.contrib.sqla import ModelView
-admin.add_view(ModelView(BlogPost, db.session))
+from apps.views.adminview import PostBlogModelView
+admin.add_view(PostBlogModelView(BlogPost, db.session))
+admin.add_view(ModelView(Category, db.session))
 
 def create_app(config_name):
     app = Flask(__name__)
