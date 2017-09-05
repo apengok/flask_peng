@@ -15,6 +15,8 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'peng.weilin@yahoo.com'
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or '57266713sweet'
     
+    IMAGE_UPLOADS_DIR = os.path.join(basedir,'apps','static','images')
+    
     @staticmethod
     def init_app(app):
         pass

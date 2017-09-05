@@ -41,9 +41,10 @@ app.register_blueprint(cmss.mod)
 
 
 from flask_admin.contrib.sqla import ModelView
-from apps.views.adminview import PostBlogModelView
+from apps.views.adminview import PostBlogModelView,UserAdmin
 admin.add_view(PostBlogModelView(BlogPost, db.session))
-admin.add_view(ModelView(Category, db.session))
+admin.add_view(UserAdmin(Users,db.session))
+#admin.add_view(ModelView(Category, db.session))
 
 def create_app(config_name):
     app = Flask(__name__)

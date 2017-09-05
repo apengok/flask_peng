@@ -8,6 +8,8 @@ from flask import current_app,request
 import hashlib
 from datetime import datetime
 
+from sqlalchemy import event
+
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
@@ -139,6 +141,23 @@ class Users(UserMixin,db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
+        
+class UserImage(db.Model):
+    __tablename__ = 'userimage'
+    id = db.Column(db.Integer,primary_key=True)
+    alt = db.Column(db.Unicode(128))
+    path = db.Column(db.String(256))
+    
+    user_id = db.Column(db.Integer,db.ForeignKey(Users.id))
+    headimage = db.relation(Users,backref='images')
+    
+@event.listens_for(UserImage,'after_delete')
+def _handle_image_delete(mapper,conn,target):
+    try:
+        if target.path:
+            os.remove(os.path.join(current_app.config['IMAGE_UPLOADS_DIR'],target.path))
+    except:
+        pass
         
 class AnonymousUser(AnonymousUserMixin):
     def can(self,permissions):

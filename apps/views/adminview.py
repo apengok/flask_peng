@@ -1,8 +1,20 @@
+import os
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import rules
 
+import flask_admin as admin
+from flask_admin.form import RenderTemplateWidget
+from flask_admin.model.form import InlineFormAdmin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.form import InlineModelConverter
+from flask_admin.contrib.sqla.fields import InlineModelFormList
 
 from apps import db,admin
+from apps.models import UserImage
+
+from wtforms import fields
+from werkzeug import secure_filename
+from flask import current_app,request,render_template
 
 # Customized admin interface
 class CustomView(ModelView):
@@ -71,6 +83,46 @@ class PostBlogModelView(ModelView):
     
     create_template = 'blog_create.html'
 
+    
+# This widget uses custom template for inline field list
+class CustomInlineFieldListWidget(RenderTemplateWidget):
+    def __init__(self):
+        super(CustomInlineFieldListWidget,self).__init__('field_list.html')
+        
+# This InlineModelFormList will use our custom widget and hide row controls
+class CustomInlineModelFormList(InlineModelFormList):
+    widget = CustomInlineFieldListWidget()
+    
+    def display_row_controls(self,field):
+        return False
+        
+# Create custom InlineModelConverter and tell it to use our InlineModelFormList
+class CustomInlineModelConverter(InlineModelConverter):
+    inline_field_list_type = CustomInlineModelFormList
+    
+class InlineModelForm(InlineFormAdmin):
+    form_excluded_columns = ('path',)
+    
+    form_label = 'Image'
+    
+    def __init__(self):
+        return super(InlineModelForm,self).__init__(UserImage)
+        
+    def postprocess_form(self,form_class):
+        form_class.upload = fields.FileField('Image')
+        return form_class
+        
+    def on_model_change(self,form,model):
+        file_data = request.files.get(form.upload.name)
+        
+        if file_data:
+            model.path = secure_filename(file_data.filename)
+            file_data.save(os.path.join(current_app.config['IMAGE_UPLOADS_DIR'],model.path))
+            
+class UserAdmin(ModelView):
+    inline_model_form_converter = CustomInlineModelConverter
+    
+    inline_models = (InlineModelForm(),)
 
 # class CustomModelView(ModelView):
     # def edit_form(self, obj):
