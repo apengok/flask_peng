@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}DMA |wbalance {{ title }}{% endblock %}
+
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='css/wbalance.css') }}" rel="stylesheet">
+
+<style type="text/css">    
+.sidebarContent {
+    margin-top: 50px;
+    margin-right: 1px;
+    margin-bottom: -5px;
+    margin-left: -10px;
+    height:600px;
+    width:150px;
+    background-color:silver;
+    text-align:center;
+    
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.sidebarContent2 {
+    margin-top: 1px;
+    margin-right: -25px;
+    margin-bottom: 1px;
+    margin-left: -25px;
+    height:300px;
+    width:150px;
+    background-color:silver;
+    text-align:center;
+    
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.sidebarContent3 {
+    margin-top: 1px;
+    margin-right: -30px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    height:150px;
+    background-color:silver;
+    text-align:center;
+    
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.sidebarContent4 {
+    margin-top: 1px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    height:75px;
+    background-color:silver;
+    text-align:center;
+    
+    
+}
+
+.sidebarContent5 {
+    margin-top: 1px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    height:150px;
+    background-color:silver;
+    text-align:center;
+    
+    #display:table-cell;
+    vertical-align: middle;
+}
+
+.sidebarContent6 {
+    margin-top: 1px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    height:450px;
+    background-color:silver;
+    text-align:center;
+    
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.content {
+    text-align:center;
+}
+
+.tophead {
+    margin-top: 1px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    height:20px;
+    width:1200px;
+    #background-color:silver;
+    text-align:center;
+    
+    display:table-cell;
+    horizon-align: middle;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+    
+    <div class="container" >
+    
+    
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="tophead">
+                    <h2>{{ current_mon }}以下期间以m3计之水平衡 30 日</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+        
+        <aside class="col-sm-3 ml-sm-auto blog-sidebar">
+          
+          <div class="sidebar-module">
+            <h4>Monthly</h4>
+            <ol class="list-unstyled">
+            {% for mon in month_group %}
+              <li><a href="{{ url_for('main.wdma_mon',mon=mon) }}">{{ mon }}</a></li>
+              
+            {% endfor %}
+            </ol>
+          </div>
+          
+        </aside><!-- /.blog-sidebar -->
+        
+        <div class="col-xs-9">
+            <div class="col-xs-2">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="sidebarContent">
+                            <p>系统进水量<br><br>{{ balance.totoal_in }}[立方米]<br>误差幅度[+/-]:1.0%</p>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-xs-8">
+                <div class="row">
+                    <!-- middle up -->
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <div class="sidebarContent2">
+                                    <p>授权用水量<br><br>{{ balance.auth_use }}[立方米]<br>误差幅度[+/-]:1.0%</p>
+                                </div>
+                            </div>
+                            <div class ="col-xs-10">
+                                <!-- side 3 up -->
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <div class="sidebarContent3">
+                                            <p>收费授权用水量<br>{{ balance.charge_auth }}[立方米]</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>计量收费用水量<br>{{ balance.charge_measure }}[立方米]</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>未计量收费用水量<br>{{ balance.charge_unmeasure }}[立方米]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-xs-10">
+                                <!-- side 3 down -->
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <div class="sidebarContent3">
+                                            <p>未授权用水量<br><br>{{ balance.uncharge_auth }}[立方米]<br>误差幅度[+/-]:2.1%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>未收费计量用水量<br>{{ balance.uncharge_measure }}[立方米]</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>未收费未计量用水量<br>{{ balance.uncharge_unmeasure }}[立方米]<br>误差幅度[+/-]:3.0%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- middle down -->
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <div class="sidebarContent2">
+                                    <p>水损失<br>{{ balance.loss }}[立方米]<br>误差幅度[+/-]:4.8%</p>
+                                </div>
+                            </div>
+                            <div class ="col-xs-10">
+                                <!-- side 3 up -->
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <div class="sidebarContent3">
+                                            <p>表观损失水量<br><br>{{ balance.apparent_loss }}[立方米]<br>误差幅度[+/-]:1.4%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>未授权用水量<br>{{ balance.unauth_use }}[立方米]<br>误差幅度[+/-]:1.2%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="sidebarContent4">
+                                            <p>用户水表误差及数据处理之误差<br>{{ balance.statistic_error }}[立方米]<br>误差幅度[+/-]:1.4%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class ="col-xs-10">
+                                <!-- side 3 down -->
+                                <div class="sidebarContent5">
+                                    <p>实际损失水量<br>{{ balance.actual_loss }}[立方米]<br>误差幅度[+/-]:7.6%</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xs-2">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="sidebarContent3">
+                                    <p>得到收入用水量<br>{{ balance.money_back }}[立方米]</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="sidebarContent6">
+                                    <p>未得到收入用水量<br>{{ balance.money_waste }}[立方米]<br>误差幅度[+/-]:4.0%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>    
+            
+        </div>
+
+    </div>
+    
+    
+{% endblock %}

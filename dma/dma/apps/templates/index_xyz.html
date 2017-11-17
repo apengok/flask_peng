@@ -1,0 +1,59 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}DMA | Openlayer {% endblock %}
+
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='assets/ol3/ol.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/sample.css') }}" rel="stylesheet">
+{% endblock %}
+
+  {% block content %}
+    <div id="map" class="map"></div>
+    
+    <script src="{{ url_for('static',filename='assets/ol3/ol.js') }} "></script>
+      
+    <script>
+       var mapMinZoom = 1;
+      var mapMaxZoom = 15;
+      var mapExtent = [-2.0037508342787E7, -2.0037508342787E7, 2.0037508342787E7, 2.0037508342787E7];
+
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          new ol.layer.Tile({
+            extent: ol.proj.transformExtent(mapExtent, 'EPSG:102100', 'EPSG:3857'),
+            source: new ol.source.XYZ({
+              attributions: 'Tiles © USGS, rendered with ' +
+                  '<a href="http://www.maptiler.com/">MapTiler</a>',
+              //url: 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+              
+              urls:['http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+	        'http://t1.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t2.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t3.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t4.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t5.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t6.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}',
+			'http://t7.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}'],
+            
+              tilePixelRatio: 2, // THIS IS IMPORTANT
+              minZoom: mapMinZoom,
+              maxZoom: mapMaxZoom
+            })
+          })
+        ],
+        view: new ol.View({
+          projection: 'EPSG:3857',
+          center: ol.proj.transform([118.40,29.86],
+              'EPSG:4326', 'EPSG:3857'),
+          zoom: 12
+        })
+      });
+    </script>
+    
+    {% endblock %}

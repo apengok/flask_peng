@@ -1,0 +1,33 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}DMA | Openlayer {% endblock %}
+
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='assets/ol3/ol.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/sample.css') }}" rel="stylesheet">
+{% endblock %}
+
+  {% block content %}
+    <div id="map" class="map"></div>
+    <script src="{{ url_for('static',filename='assets/ol3/ol.js') }} "></script>
+    <script>
+      var layer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+      });
+      var london = ol.proj.transform([-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
+      var view = new ol.View({
+        center: london,
+        zoom: 6
+      });
+      var map = new ol.Map({
+        renderer:'canvas',
+        target: 'map',
+        layers: [layer],
+        view: view
+      });
+      
+    </script>
+    
+    {% endblock %}

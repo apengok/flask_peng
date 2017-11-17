@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}DMA |wbalance {{ title }}{% endblock %}
+
+<!-- head -->
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static',filename='css/wbalance.css') }}" rel="stylesheet">
+    
+    <style type="text/css">    
+    .divTable
+    {
+        display:  table;
+        width:1400px;
+        height:600px;
+        background-color:#eee;
+        border:1px solid  #666666;
+        border-spacing:5px;/*cellspacing:poor IE support for  this*/
+       /* border-collapse:separate;*/
+    }
+    
+    </style>
+{% endblock %}
+
+{% block content %}
+<table class="table table-bordered table-dark divTable">
+  
+  <tbody>
+    <tr>
+      <td rowspan="7">1</td>
+      <td rowspan="4">2</td>
+      <td rowspan="2">3</td>
+      <td colspan="3">4</td>
+      <td rowspan="2">7</td>
+    </tr>
+    <tr>
+      <td colspan="3">4</td>
+    </tr>
+    <tr>
+      <td rowspan="2">3</td>
+      <td colspan="3">4</td>
+      <td rowspan="5">7</td>
+    </tr>
+    <tr>
+      <td colspan="3">4</td>
+    </tr>
+    <tr>
+      <td rowspan="3">2</td>
+      <td rowspan="2">3</td>
+      <td colspan="3">4</td>
+    </tr>
+    <tr>
+      <td colspan="3">4</td>
+    </tr>
+    <tr>
+      <td colspan="4">3</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

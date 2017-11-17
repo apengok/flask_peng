@@ -1,0 +1,54 @@
+@import "lesshat";
+
+/* Optional */
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+table {
+  height: 80%;
+}
+
+
+
+.cell {
+  background: #ddd;
+  border: 5px solid #fff;
+}
+/* Optional */
+
+// 12 columns grid
+[class*="col-"] {float: left;}
+.col-1 	{width: 8.333333%;}
+.col-2 	{width: 16.666666%;}
+.col-3 	{width: 25%;}
+.col-4 	{width: 33.333333%;}
+.col-5 	{width: 41.666666%;}
+.col-6 	{width: 50%;}
+.col-7 	{width: 58.333333%;}
+.col-8 	{width: 66.666666%;}
+.col-9 	{width: 75%;}
+.col-10 {width: 83.333333%;}
+.col-11 {width: 91.666666%;}
+.col-12 {width: 100%;}
+
+// 12 rows grid
+.row-1 	{height: 8.333333%;}
+.row-2 	{height: 16.666666%;}
+.row-3 	{height: 25%;}
+.row-4 	{height: 33.333333%;}
+.row-5 	{height: 41.666666%;}
+.row-6 	{height: 50%;}
+.row-7 	{height: 58.333333%;}
+.row-8 	{height: 66.666666%;}
+.row-9 	{height: 75%;}
+.row-10 {height: 83.333333%;}
+.row-11 {height: 91.666666%;}
+.row-12 {height: 100%;}
